@@ -1,0 +1,21 @@
+== ContextAssignment
+
+Protect your attributes from mass_assignment per context. Sometimes you want an admin to be able to edit a users is_admin boolean field, but never the user himself. This is in-context attribute setting.
+
+== Example
+
+  class Person < ActiveRecord::Base
+    attr_accessible :name, :first_name # default context
+    attr_accessible :name, :first_name, :is_admin, :context => :backoffice
+    attr_accessible :api_last_used, :context => :api
+  end
+
+In your different controllers, you can the do
+
+  Person.new(:name => 'De Poorter', :first_name => 'Jan') # default context
+
+  Person.find(params[:id]).update_attributes(params[:person], :context => :backoffice)
+
+  Person.find_by_api_key!(params[:api_key]).update_attributes(params[:person], :context => :api)
+
+Copyright (c) 2009 Jan De Poorter, released under the MIT license
